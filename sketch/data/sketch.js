@@ -41,8 +41,7 @@ function gotResult(error, results) {
   // console.log(results[0]);
     label = results[0].label;
 
-    setTimeout(gotResult, 4000);
-	//setTimeout(gotResult, 1000);
+    //setTimeout(gotResult, 4000);
    
 
 }
