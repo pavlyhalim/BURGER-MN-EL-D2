@@ -26,10 +26,49 @@ void setup(){
   M5.Lcd.setTextSize(10); // Set the font size.
   M5.Lcd.printf("Starting server"); //Serial output format string. 
   //check if SPIFFS is working correctly
-  Serial.begin(115200);
+   Serial.begin(115200);
    if(!SPIFFS.begin(true)){
     Serial.println("An Error has occurred while mounting SPIFFS");  
     return;
+  }
+  Serial.println("Creating certificate...");
+   
+  cert = new SSLCert();
+ 
+  int createCertResult = createSelfSignedCert(
+    *cert,
+    KEYSIZE_2048,
+    "CN=myesp.local,O=acme,C=US");
+   
+  if (createCertResult != 0) {
+    Serial.printf("Error generating certificate");
+    return; 
+  }
+ 
+  Serial.println("Certificate created with success");
+   
+  secureServer = new HTTPSServer(cert);
+ 
+  
+  
+ 
+  
+  
+    ResourceNode * nodeRoot = new ResourceNode("/", "GET", [](HTTPRequest * req, HTTPResponse * res){
+  });
+ 
+  secureServer->registerNode(nodeRoot);
+ 
+  secureServer->start();
+   
+  if (secureServer->isRunning()) {
+    Serial.println("Server ready.");
+    M5.Lcd.fillScreen(GREEN); //Set the screen color to green.
+  M5.Lcd.setCursor(10, 10); //Move the cursor position to (x,y). 
+  M5.Lcd.setTextColor(WHITE); //Set the font color to white.
+  M5.Lcd.setTextSize(10);  //Set the font size.
+  M5.Lcd.printf("Server ready");  //Serial output format string.
+    
   }
  // Route for root / web page
   server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
