@@ -11,8 +11,8 @@
 
 using namespace httpsserver;
 //the network that the board will be connected to
-const char* ssid = "lmao";
-const char* password = "12345678910";
+const char* ssid = "lmao"; //change this to your ssid
+const char* password = "12345678910"; //change this to your password
 // Create AsyncWebServer object on port 80
 AsyncWebServer server (80);
 SSLCert*cert;
@@ -25,3 +25,32 @@ void setup(){
   M5.Lcd.setTexcolor(WHITE); //Set the font color to white.
   M5.Lcd.setTextSize(10); // Set the font size.
   M5.Lcd.printf("Starting server"); //Serial output format string. 
+ // Route for root / web page
+  server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
+    request->send(SPIFFS, "/index.html", "text/html");
+  });
+
+  // Route to load p5.dom.min.js file
+  server.on("/p5.dom.min.js", HTTP_GET, [](AsyncWebServerRequest *request){
+    request->send(SPIFFS, "/p5.dom.min.js", "text/javascript");
+  });
+
+    // Route to load p5.min.js file
+  server.on("/p5.min.js", HTTP_GET, [](AsyncWebServerRequest *request){
+    request->send(SPIFFS, "/p5.min.js", "text/javascript");
+  });
+      // Route to load sketch.js file
+  server.on("/sketch.js", HTTP_GET, [](AsyncWebServerRequest *request){
+    request->send(SPIFFS, "/sketch.js", "text/javascript");
+  });
+
+  server.on("/ml5.min.js", HTTP_GET, [](AsyncWebServerRequest *request){
+    request->send(SPIFFS, "/ml5.min.js", "text/javascript");
+  });
+  //run server after all files are uploaded
+server.begin();
+}
+
+void loop() {
+  
+}
