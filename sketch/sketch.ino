@@ -25,6 +25,12 @@ void setup(){
   M5.Lcd.setTexcolor(WHITE); //Set the font color to white.
   M5.Lcd.setTextSize(10); // Set the font size.
   M5.Lcd.printf("Starting server"); //Serial output format string. 
+  //check if SPIFFS is working correctly
+  Serial.begin(115200);
+   if(!SPIFFS.begin(true)){
+    Serial.println("An Error has occurred while mounting SPIFFS");  
+    return;
+  }
  // Route for root / web page
   server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
     request->send(SPIFFS, "/index.html", "text/html");
